@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type PlatformRole = "SUPER_ADMIN" | "SHOP_ADMIN" | "SHOP_USER";
 
 export interface AdminProfile {
@@ -17,3 +19,10 @@ export const ROLE_LABELS: Record<PlatformRole, string> = {
 
 export type NavItem = { href: string; label: string; icon: string; badge?: string };
 export type NavGroup = { title: string; items: NavItem[] };
+
+export type ModulePageHeaderProps = {
+  title: string;
+  subtitle: string;
+  eyebrow?: string;
+  actions?: ReactNode;
+};

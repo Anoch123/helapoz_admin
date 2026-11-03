@@ -1,15 +1,17 @@
+
 import "server-only";
 
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 
-export async function getCurrentAdminProfile() {
+export const getCurrentAdminProfile = cache(async () => {
   await connection();
 
   const supabase = await createClient();
 
-  // 1. Get authenticated user
+  // Get authenticated user from Supabase
   const {
     data: { user },
     error: authError,
@@ -19,7 +21,7 @@ export async function getCurrentAdminProfile() {
     redirect("/unauthorized");
   }
 
-  // 2. Fetch admin profile
+  // Get the Super Admin profile
   const { data: profile, error: profileError } = await supabase
     .from("super_admin_profiles")
     .select(`
@@ -35,26 +37,21 @@ export async function getCurrentAdminProfile() {
     .eq("id", user.id)
     .maybeSingle();
 
-  // 3. Database error: deny access
   if (profileError) {
     throw new Error("Unable to verify administrator profile.");
   }
 
-  // 4. Validate administrator permissions
+  // Verify administrator access
   if (
     !profile ||
     profile.role !== "SUPER_ADMIN" ||
     !profile.is_active
   ) {
-    // Clear the current Supabase session
-    await supabase.auth.signOut({ scope: "local" });
-
     redirect("/unauthorized");
   }
 
-  // 5. Return verified administrator details
   return {
     ...profile,
     email: user.email ?? null,
   };
-}
+});

@@ -62,7 +62,6 @@ export function AppSidebar() {
       collapsible="icon"
       className="relative overflow-hidden border-r border-white/[0.06] bg-[#0B0E17] text-white"
     >
-
       {/* NAVIGATION */}
       <SidebarContent className="relative z-10 gap-0 px-3 pb-4 pt-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden mt-10">
         {NAV.map((group) => (
@@ -91,7 +90,7 @@ export function AppSidebar() {
                           group-data-[collapsible=icon]/sidebar:justify-center
                           ${
                             active
-                              ? "bg-gradient-to-r from-indigo-500/20 via-violet-500/10 to-transparent text-white ring-1 ring-inset ring-indigo-400/20 hover:from-indigo-500/25 hover:text-white"
+                              ? "bg-gradient-to-r from-indigo-500/20 via-violet-500/10 to-transparent text-black ring-1 ring-inset ring-indigo-400/20 !bg-transparent !text-black hover:!bg-transparent hover:!text-black active:!bg-transparent active:!text-black data-[active=true]:!bg-transparent data-[active=true]:!text-black hover:from-indigo-500/30 hover:via-violet-500/15 hover:ring-indigo-400/40"
                               : "text-slate-400 hover:!bg-white hover:!text-slate-900 hover:shadow-lg hover:shadow-white/10"
                           }
                         `}
@@ -144,16 +143,6 @@ export function AppSidebar() {
           </SidebarGroup>
         ))}
       </SidebarContent>
-
-      {/* FOOTER */}
-      <SidebarFooter className="relative z-10 gap-3 p-3">
-        {/* PROFILE */}
-        <div
-          className={`ml-auto shrink-0 place-items-center rounded-lg text-slate-500 transition-colors hover:bg-rose-500/15 hover:text-rose-300 group-data-[collapsible=icon]/sidebar:hidden`}
-        >
-          <LogoutButton />
-        </div>
-      </SidebarFooter>
     </Sidebar>
   );
 }

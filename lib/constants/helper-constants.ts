@@ -1,4 +1,13 @@
 import { NavGroup } from "../types/admin";
+import {
+  Bell,
+  ChevronDown,
+  ClipboardList,
+  Plus,
+  Search,
+  Settings,
+  User,
+} from "lucide-react";
 
 export const BASICSYSTEMDATA = {
     'appName': 'HELAPOZ ADMIN',
@@ -10,36 +19,41 @@ export const BASICSYSTEMDATA = {
 export const NAV: NavGroup[] = [
   {
     title: "Overview",
-    items: [{ href: "/", label: "Dashboard", icon: "grid" }],
+    items: [{ href: "/dashboard", label: "Dashboard", icon: "grid" }],
   },
   {
     title: "Tenants",
     items: [
-      { href: "/shops", label: "Shops", icon: "store" },
-      { href: "/administrators", label: "Shop administrators", icon: "shield" },
-      { href: "/users", label: "Employees & users", icon: "users" },
-    ],
-  },
-  {
-    title: "Revenue",
-    items: [
-      { href: "/subscriptions", label: "Subscriptions", icon: "repeat" },
-      { href: "/payments", label: "Payments & billing", icon: "card", badge: "1" },
-      { href: "/receipts", label: "Receipts & templates", icon: "receipt" },
+      { href: "/manage-shops", label: "Manage Shops", icon: "store" },
     ],
   },
   {
     title: "Insight",
     items: [
-      { href: "/reports", label: "Reports & analytics", icon: "chart" },
-      { href: "/notifications", label: "Notifications", icon: "bell", badge: "3" },
+      { href: "/reports-analytics", label: "Reports & analytics", icon: "chart" },
     ],
   },
   {
     title: "System",
     items: [
-      { href: "/settings", label: "Platform settings", icon: "cog" },
-      { href: "/activity-logs", label: "Admin activity logs", icon: "list" },
+      { href: "/helapoz-settings", label: "Platform settings", icon: "cog" },
+    ],
+  },
+  {
+    title: "Payment",
+    items: [
+      { href: "/payments", label: "Manage Payments", icon: "credit-card" },
+    ],
+  },
+  {
+    title: "Invoices",
+    items: [
+      { href: "/invoices", label: "Manage Invoices", icon: "clipboard-list" },
     ],
   },
 ];
+
+export const APP_HEADER_MENU_ITEMS = [
+  { href: "/profile", label: "My profile", icon: User },
+  { href: "/helapoz-settings", label: "Platform settings", icon: Settings },
+] as const;
