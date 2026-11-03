@@ -28,27 +28,22 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    title: "Payment & Invoices",
+    items: [
+      { href: "/payments", label: "Manage Payments", icon: "credit-card" },
+      { href: "/invoices", label: "Manage Invoices", icon: "clipboard-list" },
+    ],
+  },
+  {
+    title: "Subscriptions",
+    items: [
+      { href: "/subscriptions", label: "Manage Subscriptions", icon: "clipboard-list" },
+    ],
+  },
+  {
     title: "Insight",
     items: [
       { href: "/reports-analytics", label: "Reports & analytics", icon: "chart" },
-    ],
-  },
-  {
-    title: "System",
-    items: [
-      { href: "/helapoz-settings", label: "Platform settings", icon: "cog" },
-    ],
-  },
-  {
-    title: "Payment",
-    items: [
-      { href: "/payments", label: "Manage Payments", icon: "credit-card" },
-    ],
-  },
-  {
-    title: "Invoices",
-    items: [
-      { href: "/invoices", label: "Manage Invoices", icon: "clipboard-list" },
     ],
   },
 ];

@@ -1,8 +1,5 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { Plus } from "lucide-react";
-
-import { requireSuperAdmin } from "@/lib/auth/require-super-admin";
 import { getShops } from "@/lib/services/shop.service";
 import ModulesPageHeader from "@/components/widgets/dashboard/modules-page-header";
 

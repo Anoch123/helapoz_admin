@@ -1,3 +1,5 @@
+import { BASICSYSTEMDATA } from "@/lib/constants/helper-constants";
+
 interface ShopAccountSetupEmailInput {
   fullName: string;
   shopName: string;
@@ -36,14 +38,14 @@ export function createShopAccountSetupEmail({
 
   const safeSetupUrl = escapeHtml(setupUrl);
 
-  const subject = `Welcome to Helpaz - Your ${safeRole} account`;
+  const subject = `Welcome to ${BASICSYSTEMDATA.appName} - Your ${safeRole} account`;
 
   const html = `
     <!DOCTYPE html>
     <html>
       <body style="margin:0;padding:30px;background:#f4f4f5;font-family:Arial,sans-serif;color:#18181b;">
         <div style="max-width:560px;margin:auto;background:#ffffff;border-radius:12px;padding:32px;">
-          <h1 style="margin-top:0;">Welcome to Helpaz</h1>
+          <h1 style="margin-top:0;">Welcome to ${BASICSYSTEMDATA.appName}</h1>
 
           <p>Hello ${safeName},</p>
 
@@ -72,13 +74,13 @@ export function createShopAccountSetupEmail({
 
           <p style="margin-top:24px;font-size:13px;color:#71717a;">
             This is a one-time account setup link. If you were not expecting
-            this email, please contact Helpaz support.
+            this email, please contact ${BASICSYSTEMDATA.appName} support.
           </p>
 
           <hr style="border:none;border-top:1px solid #e4e4e7;margin:28px 0;"/>
 
           <p style="font-size:12px;color:#a1a1aa;">
-            Helpaz POS · Business Management Made Simple
+            ${BASICSYSTEMDATA.appName} POS · Business Management Made Simple
           </p>
         </div>
       </body>
@@ -86,7 +88,7 @@ export function createShopAccountSetupEmail({
   `;
 
   const text = `
-Welcome to Helpaz
+Welcome to ${BASICSYSTEMDATA.appName}
 
 Hello ${fullName},
 
@@ -98,9 +100,9 @@ Account type: ${role === "SHOP_ADMIN" ? "Shop Administrator" : "Shop User"}
 Set your password using this secure link:
 ${setupUrl}
 
-If you were not expecting this email, please contact Helpaz support.
+If you were not expecting this email, please contact ${BASICSYSTEMDATA.appName} support.
 
-Helpaz POS
+${BASICSYSTEMDATA.appName} POS
 Business Management Made Simple
   `.trim();
 

@@ -29,6 +29,9 @@ export async function confirmPayment({
       "INVOICE_NOT_PAYABLE",
       "PAYMENT_EXCEEDS_INVOICE_BALANCE",
       "SUBSCRIPTION_NOT_FOUND",
+      "SUBSCRIPTION_CANCELLED",
+      "SUBSCRIPTION_STATUS_NOT_ELIGIBLE",
+      "RENEWAL_BILLING_PERIOD_MISSING"
     ];
 
     for (const code of knownErrors) {

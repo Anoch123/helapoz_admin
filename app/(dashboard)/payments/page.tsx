@@ -7,6 +7,7 @@ import { getPayments } from "@/lib/services/payment-list.service";
 import { PaymentStatusBadge } from "@/components/widgets/billing/payment-status-badge";
 import { ConfirmPaymentButton } from "@/components/widgets/billing/confirm-payment-button";
 import { connection } from "next/server";
+import ModulesPageHeader from "@/components/widgets/dashboard/modules-page-header";
 
 function formatCurrency(amount: number | string) {
   return new Intl.NumberFormat("en-LK", {
@@ -26,20 +27,13 @@ function formatDate(value: string | null) {
 }
 
 async function PaymentsContent() {
-  await connection();  
+  await connection();
   await requireSuperAdmin();
 
   const payments = await getPayments();
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Payments</h1>
-        <p className="text-sm text-muted-foreground">
-          Review bank transfers and manage payment confirmations.
-        </p>
-      </div>
-
       {payments.length === 0 ? (
         <div className="rounded-lg border p-10 text-center">
           <CreditCard className="mx-auto mb-3 size-8 text-muted-foreground" />
@@ -89,9 +83,7 @@ async function PaymentsContent() {
                       </div>
                     </td>
 
-                    <td className="p-3">
-                      {invoice?.invoice_number ?? "—"}
-                    </td>
+                    <td className="p-3">{invoice?.invoice_number ?? "—"}</td>
 
                     <td className="p-3 font-medium">
                       {formatCurrency(payment.amount)}
@@ -101,9 +93,7 @@ async function PaymentsContent() {
                       {payment.transaction_reference ?? "—"}
                     </td>
 
-                    <td className="p-3">
-                      {formatDate(payment.payment_date)}
-                    </td>
+                    <td className="p-3">{formatDate(payment.payment_date)}</td>
 
                     <td className="p-3">
                       <PaymentStatusBadge status={payment.status} />
@@ -131,8 +121,17 @@ async function PaymentsContent() {
 
 export default function PaymentsPage() {
   return (
-    <Suspense fallback={<div>Loading payments...</div>}>
-      <PaymentsContent />
-    </Suspense>
+    <div className="space-y-6">
+      <main>
+        <ModulesPageHeader
+          title="Manage Payments"
+          subtitle="Review bank transfers and manage payment confirmations"
+        />
+      </main>
+
+      <Suspense fallback={<div className="rounded-xl border p-8 text-sm text-muted-foreground">Loading payments...</div>}>
+        <PaymentsContent />
+      </Suspense>
+    </div>
   );
 }

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { requireSuperAdmin } from "@/lib/auth/require-super-admin";
 import { getInvoiceById } from "@/lib/services/invoice.service";
 import { connection } from "next/server";
+import { RecordPaymentForm } from "@/components/forms/record-payment-form";
 
 /* -------------------------------------------------------------------------- */
 /* Helpers                                                                    */
@@ -55,7 +56,7 @@ async function InvoiceDetailsContent({
 
       <div>
         <Link
-          href="/dashboard/invoices"
+          href="/invoices"
           className="text-sm text-muted-foreground hover:text-foreground"
         >
           ← Back to invoices
@@ -304,20 +305,20 @@ async function InvoiceDetailsContent({
 
       {invoice.outstandingBalance > 0 &&
         ["PENDING", "PARTIALLY_PAID", "OVERDUE"].includes(invoice.status) && (
-          <section className="rounded-lg border p-4">
-            <h2 className="font-semibold">Record a bank transfer</h2>
+          <div className="rounded-lg border p-4">
+            <div className="mb-4">
+              <h2 className="font-semibold">Record a bank transfer</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Record the payment received from this shop. The payment will remain
+                pending until it is confirmed.
+              </p>
+            </div>
 
-            <p className="mt-1 text-sm text-muted-foreground">
-              Outstanding balance:{" "}
-              <span className="font-medium text-foreground">
-                {formatCurrency(invoice.outstandingBalance)}
-              </span>
-            </p>
-
-            <p className="mt-2 text-sm text-muted-foreground">
-              The payment recording form will be added here next.
-            </p>
-          </section>
+            <RecordPaymentForm
+              invoiceId={invoice.id}
+              outstandingBalance={invoice.outstandingBalance}
+            />
+          </div>
         )}
     </div>
   );
@@ -333,7 +334,7 @@ export default function InvoiceDetailsPage({
   params: Promise<{ invoiceId: string }>;
 }) {
   return (
-    <Suspense fallback={<div>Loading invoice...</div>}>
+    <Suspense fallback={<div className="rounded-xl border p-8 text-sm text-muted-foreground">Loading invoice...</div>}>
       {params.then(({ invoiceId }) => (
         <InvoiceDetailsContent invoiceId={invoiceId} />
       ))}

@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { requireSuperAdmin } from "@/lib/auth/require-super-admin";
 import { getInvoices } from "@/lib/services/invoice.service";
 import { connection } from "next/server";
+import ModulesPageHeader from "@/components/widgets/dashboard/modules-page-header";
 
 function formatCurrency(value: number | string) {
   return new Intl.NumberFormat("en-LK", {
@@ -28,12 +29,6 @@ async function InvoicesContent() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Invoices</h1>
-        <p className="text-sm text-muted-foreground">
-          View and manage shop invoices and subscription payments.
-        </p>
-      </div>
 
       <div className="overflow-hidden rounded-lg border">
         <div className="overflow-x-auto">
@@ -68,13 +63,9 @@ async function InvoicesContent() {
                     {invoice.invoice_type.replaceAll("_", " ")}
                   </td>
 
-                  <td className="px-4 py-3">
-                    {formatCurrency(invoice.total)}
-                  </td>
+                  <td className="px-4 py-3">{formatCurrency(invoice.total)}</td>
 
-                  <td className="px-4 py-3">
-                    {formatDate(invoice.due_at)}
-                  </td>
+                  <td className="px-4 py-3">{formatDate(invoice.due_at)}</td>
 
                   <td className="px-4 py-3">
                     <span className="rounded-full bg-muted px-2.5 py-1 text-xs">
@@ -113,8 +104,17 @@ async function InvoicesContent() {
 
 export default function InvoicesPage() {
   return (
-    <Suspense fallback={<div>Loading invoices...</div>}>
-      <InvoicesContent />
-    </Suspense>
+    <div className="space-y-6">
+      <main>
+        <ModulesPageHeader
+          title="Invoices"
+          subtitle="Review and manage customer invoices"
+        />
+      </main>
+
+      <Suspense fallback={<div className="rounded-xl border p-8 text-sm text-muted-foreground">Loading invoices...</div>}>
+        <InvoicesContent />
+      </Suspense>
+    </div>
   );
 }

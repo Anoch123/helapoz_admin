@@ -5,6 +5,7 @@ import { Loader2, PauseCircle, PlayCircle, Archive } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useUpdateShopStatus, type ShopStatus } from "@/hooks/useUpdateShopStatus";
+import { BASICSYSTEMDATA } from "@/lib/constants/helper-constants";
 
 interface ShopStatusActionsProps {
   shopId: string;
@@ -72,7 +73,7 @@ export function ShopStatusActions({
             onClick={() =>
               handleStatusChange(
                 "SUSPENDED",
-                "Suspending this shop will prevent it from using Helpaz POS once POS access enforcement is implemented. Continue?",
+                `Suspending this shop will prevent it from using ${BASICSYSTEMDATA.appName} POS once POS access enforcement is implemented. Continue?`,
               )
             }
           >
