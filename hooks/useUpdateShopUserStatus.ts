@@ -17,6 +17,7 @@ export function useUpdateShopUserStatus(
   const router = useRouter();
 
   const [isPending, setIsPending] = useState(false);
+  
   const [error, setError] = useState<string | null>(null);
 
   async function updateStatus(status: ShopUserStatus) {

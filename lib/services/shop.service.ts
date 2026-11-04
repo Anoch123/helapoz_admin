@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getShopUserSeatSummary } from "@/lib/services/shop-user-seat.service";
 
 export async function getShops() {
   const supabase = createAdminClient();
@@ -105,8 +106,11 @@ export async function getShopById(shopId: string) {
     }),
   );
 
+  const seatSummary = await getShopUserSeatSummary(shopId);
+
   return {
     ...shop,
     accounts,
+    seatSummary,
   };
 }

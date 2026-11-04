@@ -19,31 +19,72 @@ export const BASICSYSTEMDATA = {
 export const NAV: NavGroup[] = [
   {
     title: "Overview",
-    items: [{ href: "/dashboard", label: "Dashboard", icon: "grid" }],
-  },
-  {
-    title: "Tenants",
     items: [
-      { href: "/manage-shops", label: "Manage Shops", icon: "store" },
+      {
+        href: "/dashboard",
+        label: "Dashboard",
+        icon: "grid",
+      },
     ],
   },
   {
-    title: "Payment & Invoices",
+    title: "Business Management",
     items: [
-      { href: "/payments", label: "Manage Payments", icon: "credit-card" },
-      { href: "/invoices", label: "Manage Invoices", icon: "clipboard-list" },
+      {
+        href: "/manage-shops",
+        label: "Manage Shops",
+        icon: "store",
+      },
     ],
   },
   {
-    title: "Subscriptions",
+    title: "Billing & Finance",
     items: [
-      { href: "/subscriptions", label: "Manage Subscriptions", icon: "clipboard-list" },
+      {
+        href: "/subscriptions",
+        label: "Subscriptions",
+        icon: "repeat",
+      },
+      {
+        href: "/invoices",
+        label: "Invoices",
+        icon: "clipboard-list",
+      },
+      {
+        href: "/payments",
+        label: "Payments",
+        icon: "credit-card",
+      },
     ],
   },
   {
-    title: "Insight",
+    title: "Communication",
     items: [
-      { href: "/reports-analytics", label: "Reports & analytics", icon: "chart" },
+      {
+        href: "/notifications",
+        label: "Notifications",
+        icon: "bell",
+      },
+    ],
+  },
+  {
+    title: "Analytics",
+    items: [
+      {
+        href: "/reports-analytics",
+        label: "Reports & Analytics",
+        icon: "chart",
+      },
+    ],
+  },
+  {
+    title: "System",
+    items: [
+      {
+        href: "/audit-logs",
+        label: "Audit Logs",
+        icon: "scroll-text",
+      },
     ],
   },
 ];

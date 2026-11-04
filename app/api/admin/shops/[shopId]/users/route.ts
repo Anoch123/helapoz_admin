@@ -73,6 +73,20 @@ export async function POST(
           message: "This email address is already registered.",
           status: 409,
         },
+        NO_AVAILABLE_SEATS: {
+          message:
+            "This shop has no available purchased user seats. Please purchase an additional seat before creating another user.",
+          status: 409,
+        },
+        USER_ALREADY_SHOP_MEMBER: {
+          message: "This user is already a member of this shop.",
+          status: 409,
+        },
+        SHOP_USER_CREATED_BUT_RETRIEVAL_FAILED: {
+          message:
+            "The user was created, but we couldn't retrieve their membership details. Please refresh the page before trying again.",
+          status: 500,
+        },
       };
 
       const knownError = knownErrors[error.message];

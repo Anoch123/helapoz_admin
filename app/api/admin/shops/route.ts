@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        message: "Unable to create the shop. Please try again.",
+        message: error instanceof Error ? error.message : "Unable to create shop and accounts.",
       },
       { status: 500 },
     );
