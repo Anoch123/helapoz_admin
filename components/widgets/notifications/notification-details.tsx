@@ -3,270 +3,275 @@
 import Link from "next/link";
 import {
   ArrowLeft,
-  Bell,
   CheckCheck,
   Clock,
-  Loader2,
+  Globe,
   RefreshCw,
+  Store,
   Users,
 } from "lucide-react";
 
 import { useNotificationDetails } from "@/hooks/use-notification-details";
+import { CategoryBadge, humanize, StatusBadge } from "./notification-badge";
 
 type Props = {
   notificationId: string;
 };
 
 function formatDate(value: string | null) {
-  if (!value) return "—";
-
+  if (!value) return null;
   return new Intl.DateTimeFormat("en-LK", {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(value));
 }
 
-function getCategoryLabel(category: string) {
-  return category.replaceAll("_", " ");
+function Skeleton({ className = "" }: { className?: string }) {
+  return <div className={`animate-pulse rounded-md bg-muted ${className}`} />;
 }
 
-function StatCard({
+function Meta({
   label,
-  value,
-  icon: Icon,
+  children,
 }: {
   label: string;
-  value: number;
-  icon: React.ElementType;
+  children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border bg-card p-5">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">{label}</p>
-        <Icon className="size-5 text-muted-foreground" />
-      </div>
-
-      <p className="mt-3 text-2xl font-semibold">{value}</p>
+    <div>
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <div className="mt-1 text-sm font-medium">{children}</div>
     </div>
   );
 }
 
-export default function NotificationDetails({
-  notificationId,
-}: Props) {
-  const {
-    notification,
-    isLoading,
-    error,
-    refresh,
-  } = useNotificationDetails(notificationId);
+export default function NotificationDetails({ notificationId }: Props) {
+  const { notification, isLoading, error, refresh } =
+    useNotificationDetails(notificationId);
 
   if (isLoading) {
     return (
-      <div className="flex min-h-64 items-center justify-center">
-        <Loader2 className="size-6 animate-spin text-muted-foreground" />
+      <div className="space-y-6 p-4">
+        <Skeleton className="h-5 w-40" />
+        <Skeleton className="h-56 w-full rounded-3xl" />
+        <Skeleton className="h-40 w-full rounded-3xl" />
+        <Skeleton className="h-72 w-full rounded-3xl" />
       </div>
     );
   }
 
   if (error || !notification) {
     return (
-      <div className="rounded-xl border p-6">
-        <p className="font-medium">Unable to load notification</p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {error || "Notification not found."}
-        </p>
-
-        <div className="mt-4 flex gap-3">
-          <button
-            onClick={() => void refresh()}
-            className="rounded-md border px-3 py-2 text-sm"
-          >
-            Try again
-          </button>
-
-          <Link
-            href="/notifications"
-            className="rounded-md px-3 py-2 text-sm"
-          >
-            Back to notifications
-          </Link>
+      <div className="p-4">
+        <div className="rounded-3xl border bg-card p-8 text-center">
+          <p className="text-lg font-semibold">Unable to load notification</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {error || "Notification not found."}
+          </p>
+          <div className="mt-6 flex justify-center gap-3">
+            <button
+              onClick={() => void refresh()}
+              className="h-10 rounded-xl bg-indigo-600 px-5 text-sm font-medium text-white transition hover:bg-indigo-700"
+            >
+              Try again
+            </button>
+            <Link
+              href="/notifications"
+              className="inline-flex h-10 items-center rounded-xl border px-5 text-sm font-medium transition hover:bg-muted"
+            >
+              Back to notifications
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
 
+  const total = notification.recipientCount;
+  const readRate = total > 0 ? Math.round((notification.readCount / total) * 100) : 0;
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="space-y-6 p-4">
+      {/* Top bar */}
+      <div className="flex items-center justify-between gap-3">
         <Link
           href="/notifications"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
-          Back to notifications
+          Notifications
         </Link>
 
         <button
           onClick={() => void refresh()}
-          className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-muted"
+          aria-label="Refresh"
+          className="inline-flex size-10 items-center justify-center rounded-xl border transition hover:bg-muted"
         >
           <RefreshCw className="size-4" />
-          Refresh
         </button>
       </div>
 
-      {/* Notification information */}
-      <div className="rounded-xl border bg-card p-6">
-        <div className="flex items-start gap-3">
-          <div className="rounded-lg bg-muted p-3">
-            <Bell className="size-5" />
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium">
-                {getCategoryLabel(notification.category)}
-              </span>
-
-              <span className="rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-700">
-                {notification.status}
-              </span>
-            </div>
-
-            <h2 className="mt-3 text-xl font-semibold">
-              {notification.title}
-            </h2>
-
-            <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-muted-foreground">
-              {notification.message}
-            </p>
-          </div>
+      {/* Message */}
+      <div className="rounded-3xl border bg-card p-6 lg:p-8">
+        <div className="flex flex-wrap items-center gap-2">
+          <CategoryBadge category={notification.category} />
+          <StatusBadge status={notification.status} />
         </div>
 
-        <div className="mt-6 grid gap-4 border-t pt-5 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <p className="text-xs text-muted-foreground">Audience</p>
-            <p className="mt-1 text-sm font-medium">
-              {notification.audienceType === "ALL_SHOPS"
-                ? "All active shops"
-                : notification.targetShopName || "Specific shop"}
-            </p>
+        <h2 className="mt-4 text-2xl font-semibold tracking-tight">
+          {notification.title}
+        </h2>
+
+        <p className="mt-3 max-w-prose whitespace-pre-wrap text-sm leading-7 text-muted-foreground">
+          {notification.message}
+        </p>
+
+        <div className="mt-8 grid gap-5 border-t pt-6 sm:grid-cols-2 lg:grid-cols-4">
+          <Meta label="Audience">
+            {notification.audienceType === "ALL_SHOPS" ? (
+              <span className="inline-flex items-center gap-2">
+                <Globe className="size-4 text-muted-foreground" />
+                All active shops
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-2">
+                <Store className="size-4 text-muted-foreground" />
+                {notification.targetShopName || "Specific shop"}
+              </span>
+            )}
             {notification.targetShopCode && (
-              <p className="text-xs text-muted-foreground">
+              <p className="mt-0.5 text-xs font-normal text-muted-foreground">
                 {notification.targetShopCode}
               </p>
             )}
-          </div>
+          </Meta>
 
-          <div>
-            <p className="text-xs text-muted-foreground">Recipient role</p>
-            <p className="mt-1 text-sm font-medium">
-              {notification.recipientRole.replaceAll("_", " ")}
+          <Meta label="Recipient role">{humanize(notification.recipientRole)}</Meta>
+          <Meta label="Created">{formatDate(notification.createdAt) ?? "—"}</Meta>
+          <Meta label="Sent">{formatDate(notification.sentAt) ?? "Not sent"}</Meta>
+        </div>
+      </div>
+
+      {/* Engagement */}
+      <div className="rounded-3xl border bg-card p-6 lg:p-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-12">
+          <div className="lg:w-56">
+            <p className="text-sm text-muted-foreground">Read rate</p>
+            <p className="mt-1 text-5xl font-semibold tabular-nums tracking-tight">
+              {readRate}
+              <span className="text-2xl text-muted-foreground">%</span>
             </p>
           </div>
 
-          <div>
-            <p className="text-xs text-muted-foreground">Created at</p>
-            <p className="mt-1 text-sm font-medium">
-              {formatDate(notification.createdAt)}
-            </p>
-          </div>
+          <div className="flex-1 space-y-5">
+            <div className="flex h-3 w-full overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full rounded-full bg-emerald-500 transition-all"
+                style={{ width: `${readRate}%` }}
+              />
+            </div>
 
-          <div>
-            <p className="text-xs text-muted-foreground">Sent at</p>
-            <p className="mt-1 text-sm font-medium">
-              {formatDate(notification.sentAt)}
-            </p>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {[
+                {
+                  label: "Recipients",
+                  value: notification.recipientCount,
+                  icon: Users,
+                  tint: "bg-indigo-500/10 text-indigo-600",
+                },
+                {
+                  label: "Read",
+                  value: notification.readCount,
+                  icon: CheckCheck,
+                  tint: "bg-emerald-500/10 text-emerald-600",
+                },
+                {
+                  label: "Unread",
+                  value: notification.unreadCount,
+                  icon: Clock,
+                  tint: "bg-amber-500/10 text-amber-600",
+                },
+              ].map((s) => {
+                const Icon = s.icon;
+                return (
+                  <div key={s.label} className="flex items-center gap-3">
+                    <div className={`rounded-xl p-2.5 ${s.tint}`}>
+                      <Icon className="size-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">{s.label}</p>
+                      <p className="text-xl font-semibold tabular-nums">
+                        {s.value}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Statistics */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <StatCard
-          label="Total recipients"
-          value={notification.recipientCount}
-          icon={Users}
-        />
-
-        <StatCard
-          label="Read"
-          value={notification.readCount}
-          icon={CheckCheck}
-        />
-
-        <StatCard
-          label="Unread"
-          value={notification.unreadCount}
-          icon={Clock}
-        />
-      </div>
-
       {/* Recipients */}
-      <div className="overflow-hidden rounded-xl border bg-card">
+      <div className="overflow-hidden rounded-3xl border bg-card">
         <div className="border-b p-5">
           <h3 className="font-semibold">Recipients</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Shops and accounts that received this notification.
+            Shops and accounts that received this notification
           </p>
         </div>
 
         {notification.recipients.length === 0 ? (
-          <div className="p-10 text-center text-sm text-muted-foreground">
+          <div className="p-12 text-center text-sm text-muted-foreground">
             No recipients found.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-muted/40 text-left text-muted-foreground">
-                <tr>
+              <thead>
+                <tr className="border-b bg-muted/40 text-left text-xs text-muted-foreground">
                   <th className="px-5 py-3 font-medium">Shop</th>
                   <th className="px-5 py-3 font-medium">Account</th>
-                  <th className="px-5 py-3 font-medium">Role</th>
                   <th className="px-5 py-3 font-medium">Status</th>
                   <th className="px-5 py-3 font-medium">Delivered</th>
-                  <th className="px-5 py-3 font-medium">Read at</th>
+                  <th className="px-5 py-3 font-medium">Read</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y">
-                {notification.recipients.map((recipient) => (
-                  <tr key={recipient.id}>
+                {notification.recipients.map((r) => (
+                  <tr key={r.id} className="transition-colors hover:bg-muted/30">
                     <td className="px-5 py-4">
-                      <p className="font-medium">{recipient.shopName}</p>
+                      <div className="flex items-center gap-3">
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-indigo-500/10 text-xs font-semibold text-indigo-600">
+                          {r.shopName.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-medium leading-tight">{r.shopName}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {r.shopCode}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="px-5 py-4">
+                      <p>{r.displayName}</p>
                       <p className="text-xs text-muted-foreground">
-                        {recipient.shopCode}
+                        {humanize(r.membershipRole)}
                       </p>
                     </td>
 
                     <td className="px-5 py-4">
-                      {recipient.displayName}
-                    </td>
-
-                    <td className="px-5 py-4">
-                      {recipient.membershipRole.replaceAll("_", " ")}
-                    </td>
-
-                    <td className="px-5 py-4">
-                      <span
-                        className={
-                          recipient.status === "READ"
-                            ? "rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-700"
-                            : "rounded-full bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-700"
-                        }
-                      >
-                        {recipient.status}
-                      </span>
+                      <StatusBadge status={r.status} />
                     </td>
 
                     <td className="whitespace-nowrap px-5 py-4 text-muted-foreground">
-                      {formatDate(recipient.deliveredAt)}
+                      {formatDate(r.deliveredAt) ?? "—"}
                     </td>
 
                     <td className="whitespace-nowrap px-5 py-4 text-muted-foreground">
-                      {formatDate(recipient.readAt)}
+                      {formatDate(r.readAt) ?? "—"}
                     </td>
                   </tr>
                 ))}

@@ -78,7 +78,7 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
-    title: "System",
+    title: "Audits",
     items: [
       {
         href: "/audit-logs",
