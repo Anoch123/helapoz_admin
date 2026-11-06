@@ -37,6 +37,15 @@ export async function removeShopUser({
 
   const removedUser = data[0];
 
+  const { error: cleanupError } = await supabase.auth.admin.deleteUser(removedUser.user_id);
+
+  if (cleanupError) {
+    console.error(
+      "Failed to clean up the created Auth user:",
+      cleanupError.message,
+    );
+  }
+
   // 2. Record the removal.
   const { error: auditError } = await supabase
     .from("shop_audit_logs")
