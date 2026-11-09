@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import type { CreateShopInput } from "@/lib/validations/shop.validation";
+import type { CreateShopInput, ShopBusinessType } from "@/lib/validations/shop.validation";
 
 interface CreateShopResponse {
   success: boolean;
@@ -15,6 +15,7 @@ interface CreateShopResponse {
       id: string;
       shopCode: string;
       name: string;
+      businessType: ShopBusinessType;
     };
     shopAdmin: {
       id: string;

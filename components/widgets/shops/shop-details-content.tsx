@@ -128,6 +128,9 @@ export default async function ShopDetailsContent({
                   <span>{shop.legal_name}</span>
                 </>
               )}
+              <span className="rounded-md bg-white/15 px-2 py-0.5 font-mono text-xs">
+                {shop.business_type.replaceAll("_", " ").toLowerCase()}
+              </span>
             </div>
           </div>
         </div>

@@ -119,7 +119,7 @@ export default async function ShopListContent() {
               <tr className="border-b bg-muted/40 text-left text-xs text-muted-foreground">
                 <th className="px-5 py-3 font-medium">Shop</th>
                 <th className="px-5 py-3 font-medium">Contact</th>
-                <th className="px-5 py-3 font-medium">Location</th>
+                <th className="px-5 py-3 font-medium">Business Type</th>
                 <th className="px-5 py-3 font-medium">Status</th>
                 <th className="px-5 py-3 font-medium">Pending Invoices</th>
                 <th className="px-5 py-3 font-medium">Created</th>
@@ -155,13 +155,11 @@ export default async function ShopListContent() {
                   </td>
 
                   <td className="px-5 py-4">
-                    <p className="inline-flex items-center gap-1.5">
-                      <MapPin className="size-3.5 text-muted-foreground" />
-                      {shop.city}
-                    </p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      {shop.district || "—"}
-                    </p>
+                    <span className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold capitalize text-indigo-700 ring-1 ring-inset ring-indigo-100">
+                      <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                      {shop.business_type.charAt(0) +
+                        shop.business_type.slice(1).toLowerCase()}
+                    </span>
                   </td>
 
                   <td className="px-5 py-4">
@@ -170,14 +168,14 @@ export default async function ShopListContent() {
 
                   <td className="px-5 py-4">
                     {shop.pendingInvoiceCount > 0 ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-600 ring-1 ring-inset ring-amber-500/20 dark:text-amber-400">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-600 ring-1 ring-inset ring-amber-500/20 dark:text-amber-400">
                         <Receipt className="size-3.5" />
                         {shop.pendingInvoiceCount} pending
-                        </span>
+                      </span>
                     ) : (
-                        <span className="text-sm text-muted-foreground">
+                      <span className="text-sm text-muted-foreground">
                         No pending invoices
-                        </span>
+                      </span>
                     )}
                   </td>
 

@@ -8,8 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { useUpdateShop } from "@/hooks/useUpdateShop";
+import { ShopBusinessType, shopBusinessTypes } from "@/lib/validations/shop.validation";
 
 interface ShopFormValues {
+  businessType: ShopBusinessType;
   name: string;
   legalName: string;
   businessRegistrationNo: string;
@@ -26,6 +28,7 @@ interface EditShopFormProps {
   shop: {
     id: string;
     shop_code: string;
+    business_type: ShopBusinessType;
     name: string;
     legal_name: string | null;
     business_registration_no: string | null;
@@ -43,6 +46,7 @@ export function EditShopForm({ shop }: EditShopFormProps) {
   const { updateShop, isPending } = useUpdateShop(shop.id);
 
   const [form, setForm] = useState<ShopFormValues>({
+    businessType: shop.business_type,
     name: shop.name,
     legalName: shop.legal_name ?? "",
     businessRegistrationNo: shop.business_registration_no ?? "",
@@ -54,6 +58,16 @@ export function EditShopForm({ shop }: EditShopFormProps) {
     district: shop.district ?? "",
     postalCode: shop.postal_code ?? "",
   });
+
+  const businessTypeLabels: Record<ShopBusinessType, string> = {
+    RETAIL: "Retail",
+    RESTAURANT: "Restaurant",
+    HARDWARE: "Hardware",
+    CLOTHING: "Clothing & Fashion",
+    PHARMACY: "Pharmacy",
+    ELECTRONICS: "Electronics",
+    OTHER: "Other",
+  };
 
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
@@ -116,9 +130,7 @@ export function EditShopForm({ shop }: EditShopFormProps) {
           disabled={isPending}
         />
 
-        {error && (
-          <p className="text-sm text-destructive">{error}</p>
-        )}
+        {error && <p className="text-sm text-destructive">{error}</p>}
       </div>
     );
   }
@@ -135,6 +147,38 @@ export function EditShopForm({ shop }: EditShopFormProps) {
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="shop-businessType">
+              Business Type
+              <span className="ml-1 text-destructive">*</span>
+            </Label>
+
+            <select
+              id="shop-businessType"
+              value={form.businessType}
+              onChange={(event) =>
+                handleChange(
+                  "businessType",
+                  event.target.value as ShopBusinessType,
+                )
+              }
+              disabled={isPending}
+              required
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {shopBusinessTypes.map((type) => (
+                <option key={type} value={type}>
+                  {businessTypeLabels[type]}
+                </option>
+              ))}
+            </select>
+
+            {fieldErrors.businessType && (
+              <p className="text-sm text-destructive">
+                {fieldErrors.businessType}
+              </p>
+            )}
+          </div>
           <FormField label="Shop Name" name="name" required />
           <FormField label="Legal Name" name="legalName" />
 
@@ -170,11 +214,7 @@ export function EditShopForm({ shop }: EditShopFormProps) {
             required
           />
 
-          <FormField
-            label="Contact Phone"
-            name="contactPhone"
-            required
-          />
+          <FormField label="Contact Phone" name="contactPhone" required />
         </div>
       </section>
 
@@ -188,11 +228,7 @@ export function EditShopForm({ shop }: EditShopFormProps) {
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2">
-          <FormField
-            label="Address Line 1"
-            name="addressLine1"
-            required
-          />
+          <FormField label="Address Line 1" name="addressLine1" required />
 
           <FormField label="Address Line 2" name="addressLine2" />
 

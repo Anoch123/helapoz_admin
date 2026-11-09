@@ -1,3 +1,4 @@
+
 import { z } from "zod";
 
 const passwordSchema = z
@@ -5,9 +6,28 @@ const passwordSchema = z
   .min(12, "Password must contain at least 12 characters.")
   .max(72, "Password is too long.");
 
+export const shopBusinessTypes = [
+  "RETAIL",
+  "RESTAURANT",
+  "HARDWARE",
+  "CLOTHING",
+  "PHARMACY",
+  "ELECTRONICS",
+  "OTHER",
+] as const;
+
+export const shopBusinessTypeSchema = z.enum(shopBusinessTypes);
+
+export type ShopBusinessType = z.infer<
+  typeof shopBusinessTypeSchema
+>;
+
 export const createShopSchema = z.object({
   planId: z.string().uuid("Please select a valid subscription plan."),
+
   shop: z.object({
+    businessType: shopBusinessTypeSchema,
+
     name: z.string().trim().min(2).max(150),
     legalName: z.string().trim().max(150).optional(),
     businessRegistrationNo: z.string().trim().max(100).optional(),

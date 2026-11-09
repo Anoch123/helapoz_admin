@@ -17,6 +17,7 @@ export async function getShops() {
       city,
       district,
       status,
+      business_type,
       created_at
     `)
     .order("created_at", { ascending: false })
@@ -78,6 +79,7 @@ export async function getShopById(shopId: string) {
       postal_code,
       country,
       status,
+      business_type,
       created_at,
       updated_at
     `)

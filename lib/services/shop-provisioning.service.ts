@@ -64,6 +64,7 @@ export async function provisionShop({
       .from("shops")
       .insert({
         name: input.shop.name,
+        business_type: input.shop.businessType,
         legal_name: input.shop.legalName || null,
         business_registration_no:
           input.shop.businessRegistrationNo || null,
@@ -78,7 +79,7 @@ export async function provisionShop({
         status: "ACTIVE",
         created_by: superAdminId,
       })
-      .select("id, shop_code, name")
+      .select("id, shop_code, name, business_type")
       .single();
 
     if (shopError || !shop) {
@@ -133,6 +134,7 @@ export async function provisionShop({
         entity_id: shop.id,
         details: {
           shop_code: shop.shop_code,
+          business_type: shop.business_type,
           shop_admin_id: shopAdminId,
           shop_user_id: shopUserId,
         },
@@ -147,6 +149,7 @@ export async function provisionShop({
         id: shop.id,
         shopCode: shop.shop_code,
         name: shop.name,
+        businessType: shop.business_type,
       },
       shopAdmin: {
         id: shopAdminId,

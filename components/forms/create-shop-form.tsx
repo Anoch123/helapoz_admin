@@ -12,6 +12,8 @@ import { Label } from "@/components/ui/label";
 import { useCreateShop } from "@/hooks/useCreateShop";
 import {
   createShopSchema,
+  ShopBusinessType,
+  shopBusinessTypes,
   type CreateShopInput,
 } from "@/lib/validations/shop.validation";
 
@@ -22,6 +24,7 @@ type FormErrors = Record<string, string>;
 const initialValues: CreateShopInput = {
   planId: "",
   shop: {
+    businessType: "" as ShopBusinessType,
     name: "",
     legalName: "",
     businessRegistrationNo: "",
@@ -223,6 +226,15 @@ export function CreateShopForm() {
   const activePlans = plans.filter((plan) => plan.is_active);
 
   const [form, setForm] = useState<CreateShopInput>(initialValues);
+  const businessTypeLabels: Record<ShopBusinessType, string> = {
+    RETAIL: "Retail",
+    RESTAURANT: "Restaurant",
+    HARDWARE: "Hardware",
+    CLOTHING: "Clothing & Fashion",
+    PHARMACY: "Pharmacy",
+    ELECTRONICS: "Electronics",
+    OTHER: "Other",
+  };
   const [errors, setErrors] = useState<FormErrors>({});
   const [validationMessage, setValidationMessage] = useState<string | null>(
     null,
@@ -407,6 +419,49 @@ export function CreateShopForm() {
           description="Business information for this shop."
         >
           <div className="grid gap-5 md:grid-cols-2">
+            {/* Business Type */}
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="businessType">
+                Business Type
+                <span className="text-destructive"> *</span>
+              </Label>
+
+              <select
+                id="businessType"
+                name="businessType"
+                value={form.shop.businessType}
+                required
+                aria-invalid={!!errors["shop.businessType"]}
+                aria-describedby={
+                  errors["shop.businessType"] ? "businessType-error" : undefined
+                }
+                onChange={(event) =>
+                  updateShop(
+                    "businessType",
+                    event.target.value as ShopBusinessType,
+                  )
+                }
+                className={`${inputClass(
+                  errors["shop.businessType"],
+                )} w-full border bg-background px-3 text-sm`}
+              >
+                <option value="" disabled>
+                  Select business type
+                </option>
+
+                {shopBusinessTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {businessTypeLabels[type]}
+                  </option>
+                ))}
+              </select>
+
+              {errors["shop.businessType"] && (
+                <p id="businessType-error" className="text-xs text-destructive">
+                  {errors["shop.businessType"]}
+                </p>
+              )}
+            </div>
             <FormField
               label="Shop Name"
               name="shopName"
@@ -600,7 +655,9 @@ export function CreateShopForm() {
 
             {selectedPlan ? (
               <>
-                <p className="mt-1 text-lg font-semibold">{selectedPlan.name}</p>
+                <p className="mt-1 text-lg font-semibold">
+                  {selectedPlan.name}
+                </p>
                 <p className="mt-3">
                   <span className="text-3xl font-semibold tabular-nums tracking-tight">
                     {money(selectedPlan.monthly_price, selectedPlan.currency)}

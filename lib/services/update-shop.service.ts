@@ -31,7 +31,8 @@ export async function updateShop({
       address_line_2,
       city,
       district,
-      postal_code
+      postal_code,
+      business_type
     `)
     .eq("id", shopId)
     .maybeSingle();
@@ -47,6 +48,7 @@ export async function updateShop({
   const updates = {
     name: input.name,
     legal_name: input.legalName || null,
+    business_type: input.businessType,
     business_registration_no: input.businessRegistrationNo || null,
     contact_email: input.contactEmail,
     contact_phone: input.contactPhone,
