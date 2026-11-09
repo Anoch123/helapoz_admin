@@ -6,7 +6,7 @@ import { getShopUserSeatSummary } from "@/lib/services/shop-user-seat.service";
 export async function getShops() {
   const supabase = createAdminClient();
 
-  const { data, error } = await supabase
+  const { data: shops, error } = await supabase
     .from("shops")
     .select(`
       id,
@@ -27,7 +27,34 @@ export async function getShops() {
     throw new Error("Unable to load shops.");
   }
 
-  return data ?? [];
+  if (!shops || shops.length === 0) return [];
+
+  const shopIds = shops.map((shop) => shop.id);
+
+  const { data: invoices, error: invoiceError } = await supabase
+    .from("invoices")
+    .select("shop_id")
+    .in("shop_id", shopIds)
+    .eq("status", "PENDING");
+
+  if (invoiceError) {
+    console.error("Get pending invoice counts error:", invoiceError.message);
+    throw new Error("Unable to load pending invoice counts.");
+  }
+
+  const pendingInvoiceCounts = new Map<string, number>();
+
+  for (const invoice of invoices ?? []) {
+    pendingInvoiceCounts.set(
+      invoice.shop_id,
+      (pendingInvoiceCounts.get(invoice.shop_id) ?? 0) + 1,
+    );
+  }
+
+  return shops.map((shop) => ({
+    ...shop,
+    pendingInvoiceCount: pendingInvoiceCounts.get(shop.id) ?? 0,
+  }));
 }
 
 export async function getShopById(shopId: string) {
@@ -106,11 +133,34 @@ export async function getShopById(shopId: string) {
     }),
   );
 
+  // 4. Retrieve pending invoices.
+  const { data: pendingInvoices, error: invoiceError } = await supabase
+    .from("invoices")
+    .select(`
+      id,
+      invoice_number,
+      invoice_type,
+      status,
+      total,
+      currency,
+      issued_at,
+      due_at
+    `)
+    .eq("shop_id", shopId)
+    .eq("status", "PENDING")
+    .order("issued_at", { ascending: false });
+
+  if (invoiceError) {
+    console.error("Get shop pending invoices error:", invoiceError.message);
+    throw new Error("Unable to load shop pending invoices.");
+  }
+
   const seatSummary = await getShopUserSeatSummary(shopId);
 
   return {
     ...shop,
     accounts,
     seatSummary,
+    pendingInvoices: pendingInvoices ?? [],
   };
 }

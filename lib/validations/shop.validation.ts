@@ -6,6 +6,7 @@ const passwordSchema = z
   .max(72, "Password is too long.");
 
 export const createShopSchema = z.object({
+  planId: z.string().uuid("Please select a valid subscription plan."),
   shop: z.object({
     name: z.string().trim().min(2).max(150),
     legalName: z.string().trim().max(150).optional(),

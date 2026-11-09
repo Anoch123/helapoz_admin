@@ -2,13 +2,14 @@ import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 
-export async function createInitialShopSubscription(shopId: string) {
+export async function createInitialShopSubscription(shopId: string, planId: string) {
   const supabase = createAdminClient();
 
   const { data, error } = await supabase.rpc(
     "create_initial_shop_subscription",
     {
       p_shop_id: shopId,
+      p_plan_id: planId,
     },
   );
 
@@ -40,6 +41,6 @@ export async function createInitialShopSubscription(shopId: string) {
     subscriptionId: result.subscription_id,
     invoiceId: result.invoice_id,
     invoiceNumber: result.invoice_number,
-    invoiceAmount: Number(result.invoice_amount),
+    invoiceAmount: Number(result.monthly_price),
   };
 }

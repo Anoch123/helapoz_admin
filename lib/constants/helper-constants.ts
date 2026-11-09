@@ -41,6 +41,11 @@ export const NAV: NavGroup[] = [
     title: "Billing & Finance",
     items: [
       {
+        href: "/subscription-plans",
+        label: "Subscription Plans",
+        icon: "CreditCard",
+      },
+      {
         href: "/subscriptions",
         label: "Subscriptions",
         icon: "repeat",

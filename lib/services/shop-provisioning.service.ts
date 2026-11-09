@@ -119,7 +119,7 @@ export async function provisionShop({
       );
     }
 
-    const subscription = await createInitialShopSubscription(shop.id);
+    const subscription = await createInitialShopSubscription(shop.id, input.planId);
 
     // 5. Record the provisioning event.
     const { error: auditError } = await supabase
